@@ -3,14 +3,14 @@
 Copyright (c) 2013 John Atkinson (jga)
 */
 
-class ControllerPaymentBitcoin extends Controller {
+class ControllerPaymentFranko extends Controller {
 
-    private $payment_module_name  = 'bitcoin';
+    private $payment_module_name  = 'franko';
 	protected function index() {
         $this->language->load('payment/'.$this->payment_module_name);
-    	$this->data['button_bitcoin_pay'] = $this->language->get('button_bitcoin_pay');
+    	$this->data['button_franko_pay'] = $this->language->get('button_franko_pay');
     	$this->data['text_please_send'] = $this->language->get('text_please_send');
-    	$this->data['text_btc_to'] = $this->language->get('text_btc_to');
+    	$this->data['text_frk_to'] = $this->language->get('text_frk_to');
     	$this->data['text_to_complete'] = $this->language->get('text_to_complete');
     	$this->data['text_click_pay'] = $this->language->get('text_click_pay');
     	$this->data['text_uri_compatible'] = $this->language->get('text_uri_compatible');
@@ -22,8 +22,8 @@ class ControllerPaymentBitcoin extends Controller {
 		$this->data['error_msg'] = $this->language->get('error_msg');
 		$this->data['error_confirm'] = $this->language->get('error_confirm');
 		$this->data['error_incomplete_pay'] = $this->language->get('error_incomplete_pay');
-		$this->data['bitcoin_countdown_timer'] = $this->config->get('bitcoin_countdown_timer');
-		$bitcoin_btc_decimal = $this->config->get('bitcoin_btc_decimal');
+		$this->data['franko_countdown_timer'] = $this->config->get('franko_countdown_timer');
+		$franko_frk_decimal = $this->config->get('franko_frk_decimal');
 				
 		$this->checkUpdate();
 	
@@ -32,35 +32,35 @@ class ControllerPaymentBitcoin extends Controller {
 		$order = $this->model_checkout_order->getOrder($order_id);
 
 		$current_default_currency = $this->config->get('config_currency');
-		$this->data['bitcoin_total'] = sprintf("%.".$bitcoin_btc_decimal."f", round($this->currency->convert($order['total'], $current_default_currency, "BTC"),$bitcoin_btc_decimal));
-		$this->db->query("UPDATE `" . DB_PREFIX . "order` SET bitcoin_total = '" . $this->data['bitcoin_total'] . "', date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'");
+		$this->data['franko_total'] = sprintf("%.".$franko_frk_decimal."f", round($this->currency->convert($order['total'], $current_default_currency, "FRK"),$franko_frk_decimal));
+		$this->db->query("UPDATE `" . DB_PREFIX . "order` SET franko_total = '" . $this->data['franko_total'] . "', date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'");
 
 		require_once('jsonRPCClient.php');
 		
-		$bitcoin = new jsonRPCClient('http://'.$this->config->get('bitcoin_rpc_username').':'.$this->config->get('bitcoin_rpc_password').'@'.$this->config->get('bitcoin_rpc_address').':'.$this->config->get('bitcoin_rpc_port').'/');
+		$franko = new jsonRPCClient('http://'.$this->config->get('franko_rpc_username').':'.$this->config->get('franko_rpc_password').'@'.$this->config->get('franko_rpc_address').':'.$this->config->get('franko_rpc_port').'/');
 		
 		$this->data['error'] = false;
 		try {
-			$bitcoin_info = $bitcoin->getinfo();
+			$franko_info = $franko->getinfo();
 		} catch (Exception $e) {
 			$this->data['error'] = true;
-			if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/bitcoin.tpl')) {
-				$this->template = $this->config->get('config_template') . '/template/payment/bitcoin.tpl';
+			if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/franko.tpl')) {
+				$this->template = $this->config->get('config_template') . '/template/payment/franko.tpl';
 			} else {
-				$this->template = 'default/template/payment/bitcoin.tpl';
+				$this->template = 'default/template/payment/franko.tpl';
 			}	
 			$this->render();
 			return;
 		}
 		$this->data['error'] = false;
 		
-		$this->data['bitcoin_send_address'] = $bitcoin->getaccountaddress($this->config->get('bitcoin_prefix').'_'.$order_id);
-		$this->db->query("UPDATE `" . DB_PREFIX . "order` SET bitcoin_address = '" . $this->data['bitcoin_send_address'] . "', date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'");
+		$this->data['franko_send_address'] = $franko->getaccountaddress($this->config->get('franko_prefix').'_'.$order_id);
+		$this->db->query("UPDATE `" . DB_PREFIX . "order` SET franko_address = '" . $this->data['franko_send_address'] . "', date_modified = NOW() WHERE order_id = '" . (int)$order_id . "'");
 		
-		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/bitcoin.tpl')) {
-			$this->template = $this->config->get('config_template') . '/template/payment/bitcoin.tpl';
+		if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/payment/franko.tpl')) {
+			$this->template = $this->config->get('config_template') . '/template/payment/franko.tpl';
 		} else {
-			$this->template = 'default/template/payment/bitcoin.tpl';
+			$this->template = 'default/template/payment/franko.tpl';
 		}	
 		
 		$this->render();
@@ -72,37 +72,37 @@ class ControllerPaymentBitcoin extends Controller {
 		$order_id = $this->session->data['order_id'];
         $order = $this->model_checkout_order->getOrder($order_id);
 		$current_default_currency = $this->config->get('config_currency');	
-		$bitcoin_btc_decimal = $this->config->get('bitcoin_btc_decimal');	
-		$bitcoin_total = $order['bitcoin_total'];
-		$bitcoin_address = $order['bitcoin_address'];
-		if(!$this->config->get('bitcoin_blockchain')) {
+		$franko_frk_decimal = $this->config->get('franko_frk_decimal');	
+		$franko_total = $order['franko_total'];
+		$franko_address = $order['franko_address'];
+		if(!$this->config->get('franko_blockchain')) {
 			require_once('jsonRPCClient.php');
-			$bitcoin = new jsonRPCClient('http://'.$this->config->get('bitcoin_rpc_username').':'.$this->config->get('bitcoin_rpc_password').'@'.$this->config->get('bitcoin_rpc_address').':'.$this->config->get('bitcoin_rpc_port').'/');
+			$franko = new jsonRPCClient('http://'.$this->config->get('franko_rpc_username').':'.$this->config->get('franko_rpc_password').'@'.$this->config->get('franko_rpc_address').':'.$this->config->get('franko_rpc_port').'/');
 		
 			try {
-				$bitcoin_info = $bitcoin->getinfo();
+				$franko_info = $franko->getinfo();
 			} catch (Exception $e) {
 				$this->data['error'] = true;
 			}
 		}
 
 		try {
-			if(!$this->config->get('bitcoin_blockchain')) {
-				$received_amount = $bitcoin->getreceivedbyaddress($bitcoin_address,0);
+			if(!$this->config->get('franko_blockchain')) {
+				$received_amount = $franko->getreceivedbyaddress($franko_address,0);
 			}
 			else {
 				static $ch = null;
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-				curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; Blockchain.info PHP client; '.php_uname('s').'; PHP/'.phpversion().')');
-				curl_setopt($ch, CURLOPT_URL, 'http://blockchain.info/q/getreceivedbyaddress/'.$bitcoin_address.'?confirmations=0');
+				curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; Cryptosource PHP client; '.php_uname('s').'; PHP/'.phpversion().')');
+				curl_setopt($ch, CURLOPT_URL, 'http://frk.cryptocoinexplorer.com/q/getreceivedbyaddress'.$franko_address.'?confirmations=0');
 				$res = curl_exec($ch);
 				if ($res === false) throw new Exception('Could not get reply: '.curl_error($ch));
 				$received_amount = $res / 100000000;
 			}
-			if(round((float)$received_amount,$bitcoin_btc_decimal) >= round((float)$bitcoin_total,$bitcoin_btc_decimal)) {
+			if(round((float)$received_amount,$franko_frk_decimal) >= round((float)$franko_total,$franko_frk_decimal)) {
 				$order = $this->model_checkout_order->getOrder($order_id);
-				$this->model_checkout_order->confirm($order_id, $this->config->get('bitcoin_order_status_id'));
+				$this->model_checkout_order->confirm($order_id, $this->config->get('franko_order_status_id'));
 				echo "1";
 			}
 			else {
@@ -117,11 +117,11 @@ class ControllerPaymentBitcoin extends Controller {
 	public function checkUpdate() {
 		if (extension_loaded('curl')) {
 			$data = array();
-			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "currency WHERE code = 'BTC'");
+			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "currency WHERE code = 'FRK'");
 						
 			if(!$query->row) {
-				$this->db->query("INSERT INTO " . DB_PREFIX . "currency (title, code, symbol_right, decimal_place, status) VALUES ('Bitcoin', 'BTC', ' BTC', ".$this->config->get('bitcoin_btc_decimal').", ".$this->config->get('bitcoin_show_btc').")");
-				$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "currency WHERE code = 'BTC'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "currency (title, code, symbol_right, decimal_place, status) VALUES ('Franko', 'FRK', ' FRK', ".$this->config->get('franko_frk_decimal').", ".$this->config->get('franko_show_frk').")");
+				$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "currency WHERE code = 'FRK'");
 			}
 			
 			$format = '%Y-%m-%d %H:%M:%S';
@@ -149,7 +149,7 @@ class ControllerPaymentBitcoin extends Controller {
 	
 	public function runUpdate() {
 		$default_currency_code = $this->config->get('config_currency');
-		$path = "1/BTC". $default_currency_code . "/ticker";
+		
 		$req = array();
 		
 		// API settings
@@ -174,29 +174,24 @@ class ControllerPaymentBitcoin extends Controller {
 		if (is_null($ch)) {
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MtGox PHP client; '.php_uname('s').'; PHP/'.phpversion().')');
+			curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; Copia PHP client; '.php_uname('s').'; PHP/'.phpversion().')');
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 		}
-		curl_setopt($ch, CURLOPT_URL, 'https://data.mtgox.com/api/'.$path);
+		curl_setopt($ch, CURLOPT_URL, 'http://www.frankos.org/coin_api.php?coin_id=33');
 	 
 		// run the query
 		$res = curl_exec($ch);
 		if ($res === false) throw new Exception('Could not get reply: '.curl_error($ch));
 		$dec = json_decode($res, true);
 		if (!$dec) throw new Exception('Invalid data received, please make sure connection is working and requested API exists');
-		$btcdata = $dec;
+		$frkdata = $dec;
 		
-		$currency = "BTC";
-		$avg_value = $btcdata['return']['avg']['value'];
-		$last_value = $btcdata['return']['last']['value'];
+		$currency = "FRK";
+		$usd_value = $frkdata['usd_value'];
+		
 				
-		if ((float)$avg_value && (float)$last_value) {
-			if($avg_value < $last_value) {
-				$value = $avg_value;
-			}
-			else {
-				$value = $last_value;
-			}
+		if ((float)$usd_value) {
+			$value = $usd_value;
 			$value = 1/$value;
 			$this->db->query("UPDATE " . DB_PREFIX . "currency SET value = '" . (float)$value . "', date_modified = '" .  $this->db->escape(date('Y-m-d H:i:s')) . "' WHERE code = '" . $this->db->escape($currency) . "'");
 		}

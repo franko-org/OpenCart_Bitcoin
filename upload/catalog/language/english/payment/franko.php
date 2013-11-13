@@ -4,10 +4,10 @@ Copyright (c) 2013 John Atkinson (jga)
 */
 
 // Text
-$_['text_title'] = 'Bitcoin';
-$_['button_bitcoin_pay'] 		= 'Pay with Bitcoin';
+$_['text_title'] = 'Franko';
+$_['button_franko_pay'] 		= 'Pay with Franko';
 $_['text_please_send']	= 'Please send';
-$_['text_btc_to']	= 'BTC to';
+$_['text_frk_to']	= 'FRK to';
 $_['text_to_complete']	= 'to complete the transaction.';
 $_['text_click_pay']	= 'Click to pay';
 $_['text_uri_compatible']	= '(URI-compatible wallets only)';

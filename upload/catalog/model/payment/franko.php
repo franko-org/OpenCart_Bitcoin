@@ -3,11 +3,11 @@
 Copyright (c) 2013 John Atkinson (jga)
 */
 
-class ModelPaymentBitcoin extends Model {
+class ModelPaymentFranko extends Model {
   	public function getMethod($address) {
-		$this->load->language('payment/bitcoin');
+		$this->load->language('payment/franko');
 		
-		if ($this->config->get('bitcoin_status')) {
+		if ($this->config->get('franko_status')) {
         	$status = TRUE;
 		} else {
 			$status = FALSE;
@@ -17,9 +17,9 @@ class ModelPaymentBitcoin extends Model {
 	
 		if ($status) {  
       		$method_data = array( 
-        		'code'         	=> 'bitcoin',
+        		'code'         	=> 'franko',
         		'title'      	=> $this->language->get('text_title'),
-				'sort_order' 	=> $this->config->get('bitcoin_sort_order'),
+				'sort_order' 	=> $this->config->get('franko_sort_order'),
       		);
     	}
    

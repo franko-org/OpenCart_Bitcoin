@@ -1,4 +1,4 @@
-# OpenCart_Bitcoin
+# OpenCart_Franko
 ### by John Atkinson (jga) from [BTC Gear](http://btcgear.com/)
 
 Donations can be paid here: **12ctRXVVPAXQ6CQyEXkBhvi33K7kP4CMB5**
@@ -23,23 +23,23 @@ This extension now requires previous installation of [vQmod](https://code.google
 
 1. Install vQmod.
 2. Upload all files maintaining OpenCart folder structure.
-3. Install the payment module in the admin console (Extensions > Payments > Bitcoin > Install).
-4. Edit the payment module settings (Extensions > Payments > Bitcoin > Edit).
-5. Run at least one test order through checkout up until payment (no payment required).  The first order initializes the Bitcoin currency and will return 0 BTC for the order total.
+3. Install the payment module in the admin console (Extensions > Payments > Franko > Install).
+4. Edit the payment module settings (Extensions > Payments > Franko > Edit).
+5. Run at least one test order through checkout up until payment (no payment required).  The first order initializes the Franko currency and will return 0 BTC for the order total.
 
 ## Explanation of Settings
 
-* *Bitcoin RPC Username*: This is the username in the "rpcuser" line of your bitcoin.conf file.
-* *Bitcoin RPC Host Address*: This is the IP address of the computer bitcoind is running on.
-* *Bitcoin RPC Password*: This is the password in the "rpcpassword" line of your bitcoin.conf file.
-* *Bitcoin RPC Port*: This is the port number in the "rpcport" line of your bitcoin.conf file.  The default port is 8332.
+* *Franko RPC Username*: This is the username in the "rpcuser" line of your bitcoin.conf file.
+* *Franko RPC Host Address*: This is the IP address of the computer bitcoind is running on.
+* *Franko RPC Password*: This is the password in the "rpcpassword" line of your bitcoin.conf file.
+* *Franko RPC Port*: This is the port number in the "rpcport" line of your bitcoin.conf file.  The default port is 8332.
 * *The prefix for the address labels*: The addresses will be assigned to accounts named with the format [prefix]_[order_id].
 * *Is this a blockchain.info JSON-RPC server?*: Choose yes if connecting to blockchain.info JSON-RPC API.
 * *Show BTC as a store currency*: If you select yes, your customers will be able to view prices in BTC.
 * *Calculate BTC amount to this many decimal places*: Self explanatory. Choose the precision of the exchange rate calculation.
 * *Time to complete order*: The number of seconds a customer has to send bitcoins to complete the order.
 * *Status of a new order*: Choose a status for an order that has received payment with 0 confirmations.
-* *Status*: Enable the Bitcoin payment module here.
+* *Status*: Enable the Franko payment module here.
 * *Sort Order*: Where you want this module to show up in relation to the other payment modules on the checkout page.
 
 ### New in version 1.4.0
